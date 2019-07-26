@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -8,9 +8,9 @@ namespace Consyste.Clients.Portal
     {
         public Configuration Config { get; }
 
-        public Client() : this(new Configuration())
-        {
-        }
+        public Client() : this(new Configuration()) { }
+
+        public Client(string apiKey) : this(new Configuration { ApiKey = apiKey }) { }
 
         public Client(Configuration config)
         {
