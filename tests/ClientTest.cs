@@ -4,21 +4,23 @@ using Xunit;
 namespace Consyste.Clients.Portal {
 public class TestClient {
 
-        [Fact]
-        public void TestContinuaListagem()
+        [Theory()]
+        [InlineData(ModeloDocumento.Nfe)]
+        [InlineData(ModeloDocumento.Cte)]
+        public void TestContinuaListagem(ModeloDocumento modelo)
         {
-            var modelo = "55";
             var token = "";
 
             var res = Cliente().ContinuaListagem(modelo, token).Result;
-
-	        Assert.NotNull(res);
+	        
+            Assert.NotNull(res);
         }
 
-        [Fact]
-        public void TestListaDocumentos()
+        [Theory()]
+        [InlineData(ModeloDocumento.Nfe)]
+        [InlineData(ModeloDocumento.Cte)]
+        public void TestListaDocumentos(ModeloDocumento modelo)
         {
-            var modelo = "55";
             var filtro = "";
             
             var res = Cliente().ListaDocumentos(modelo, filtro).Result;
