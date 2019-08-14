@@ -13,6 +13,6 @@
         /// <summary>
         /// A URL base a utilizar para as chamadas. Deve ser alterado, caso seja necessário realizar testes em homologação.
         /// </summary>
-        public string UrlBase { get; set; } = UrlBaseHomologacao;
+        public string UrlBase { get; set; } = UrlBaseProducao;
     }
 }
