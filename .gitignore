@@ -30,3 +30,7 @@ msbuild.wrn
 
 # Visual Studio Code
 .vs/
+
+# temporary files folder
+tests/fixtures/temp/*.pdf
+tests/fixtures/temp/*.xml

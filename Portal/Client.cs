@@ -17,21 +17,28 @@ namespace Consyste.Clients.Portal
             Config = config;
         }
 
-        public async Task<ListagemDocumentos> ListaDocumentos(ModeloDocumento modelo, FiltroDocumento filtro, string consulta = null, Campo[] campos = null)
+        public async Task<ListagemDocumentos> ListaDocumentos(ModeloDocumento modelo, FiltroDocumento filtro, string[] campos = null, string consulta = null)
         {   
-            string campo = "";
-            foreach (Campo c in campos)
-            {   
-                var campoParametro = CodigoCampo(c);
-                campo = campo + campoParametro + ",";
-            }
-
-            return await ListaDocumentos(CodigoModelo(modelo), CodigoFiltro(filtro), consulta, campo);
+            return await ListaDocumentos(CodigoModelo(modelo), CodigoFiltro(filtro), campos, consulta);
         }
 
-        public async Task<ListagemDocumentos> ListaDocumentos(string modelo, string filtro, string consulta = null, string campos = null)
+        public async Task<ListagemDocumentos> ListaDocumentos(string modelo, string filtro, string[] campos = null, string consulta = null)
         {   
-            var res = await PerformGet($"/api/v1/{modelo}/lista/{filtro}?q=" + Uri.EscapeUriString(consulta) + "&campos={campos}");
+            string campoParametro = "";
+            string consultaParametro = "";
+
+            if (campos != null) {
+                foreach (string campo in campos)
+                {   
+                    campoParametro = campoParametro + campo + ",";
+                }
+            }
+
+            if (consulta != null) {
+                consultaParametro = Uri.EscapeUriString(consulta);
+            }
+
+            var res = await PerformGet($"/api/v1/{modelo}/lista/{filtro}?q=" + consultaParametro + "&campos={campoParametro}");
 
             if (res.StatusCode != HttpStatusCode.OK)
                 throw new ApplicationException($"Erro {res.StatusCode} ao solicitar listagem de documentos");
@@ -54,19 +61,19 @@ namespace Consyste.Clients.Portal
             return ListagemDocumentos.FromJSON(res.GetResponseStream());
         }
 
-        public async Task<HttpWebResponse> BaixaDocumento(ModeloDocumento modelo, FormatoDocumento formato, string chave)
+        public async Task<Download> BaixaDocumento(ModeloDocumento modelo, FormatoDocumento formato, string chave)
         {
             return await BaixaDocumento(CodigoModelo(modelo), CodigoFormato(formato), chave);
         }
 
-        public async Task<HttpWebResponse> BaixaDocumento(string modelo, string formato, string chave)
+        public async Task<Download> BaixaDocumento(string modelo, string formato, string chave)
         {
             var res = await PerformGet($"/api/v1/{modelo}/{chave}/download{formato}");
 
             if (res.StatusCode != HttpStatusCode.OK)
                 throw new ApplicationException($"Erro {res.StatusCode} ao baixar documento");
 
-            return res;
+            return new Download(res);
         }
 
         private async Task<HttpWebResponse> PerformGet(string uri)
@@ -121,45 +128,5 @@ namespace Consyste.Clients.Portal
                     throw new ArgumentException($"Filtro desconhecido: {filtro}", nameof(filtro));
             }
         }
-
-        private string CodigoCampo(Campo campo)
-        {
-            switch (campo)
-            {
-                case Campo.Id:
-                    return "id";
-                case Campo.Chave:
-                    return "chave";
-                case Campo.EmitidoEm:
-                    return "emitido_em";
-                case Campo.Serie:
-                    return "serie";
-                case Campo.Numero:
-                    return "numero";
-                case Campo.Valor:
-                    return "valor";
-                case Campo.SituacaoCustodia:
-                    return "situacao_custodia";
-                case Campo.SituacaoSefaz:
-                    return "situacao_sefaz";
-                case Campo.EmitenteCnpj:
-                    return "emit_cnpj";
-                case Campo.EmitenteNome:
-                    return "emit_nome";
-                case Campo.DestinatarioCnpj:
-                    return "dest_cnpj";
-                case Campo.DestinatarioNome:
-                    return "dest_nome";
-                // Apenas Cte
-                case Campo.TomadoCnpj:
-                    return "toma_cnpj";
-                // Apenas Cte
-                case Campo.TomadoNome:
-                    return "toma_cnpj";
-                default:
-                    throw new ArgumentException($"Campo desconhecido: {campo}", nameof(campo));
-            }
-        }
-
     }
 }
