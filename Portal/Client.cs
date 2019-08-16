@@ -32,13 +32,14 @@ namespace Consyste.Clients.Portal
                 {   
                     campoParametro = campoParametro + campo + ",";
                 }
+                campoParametro = "campos=" + campoParametro;
             }
 
             if (consulta != null) {
-                consultaParametro = Uri.EscapeUriString(consulta);
+                consultaParametro = "q=" + Uri.EscapeUriString(consulta);
             }
 
-            var res = await PerformGet($"/api/v1/{modelo}/lista/{filtro}?q=" + consultaParametro + "&campos={campoParametro}");
+            var res = await PerformGet($"/api/v1/{modelo}/lista/{filtro}?{consultaParametro}&{campoParametro}");
 
             if (res.StatusCode != HttpStatusCode.OK)
                 throw new ApplicationException($"Erro {res.StatusCode} ao solicitar listagem de documentos");
