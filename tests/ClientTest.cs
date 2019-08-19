@@ -1,6 +1,6 @@
 using Xunit;
 using System.Threading.Tasks;
-
+using System.IO;
 
 namespace Consyste.Clients.Portal
 {
@@ -20,7 +20,7 @@ namespace Consyste.Clients.Portal
             string [] campos = new string[2]  { "id", "chave" };
             var consulta = "";
             
-            var res = await Cliente().ListaDocumentos(modelo, filtro, null, consulta);
+            var res = await Cliente().ListaDocumentos(modelo, filtro, campos, consulta);
             
             Assert.Equal(total, res.Total);
         }
@@ -108,6 +108,11 @@ namespace Consyste.Clients.Portal
             var res = await Cliente().BaixaDocumento(modelo, formato, chave);
             
             res.Salva($"../../../tests/fixtures/temp/NfePdf.pdf");
+            
+            var result = File.ReadAllText($"../../../tests/fixtures/temp/NfePdf.pdf");
+            var expect = File.ReadAllText($"../../../tests/fixtures/NfePdf-{chave}.pdf");
+            
+            Assert.Equal(result.Length, expect.Length);
         }
 		
 		[Theory()]
@@ -128,6 +133,11 @@ namespace Consyste.Clients.Portal
             var res = await Cliente().BaixaDocumento(modelo, formato, chave);
 
             res.Salva($"../../../tests/fixtures/temp/NfeXml.xml");
+            
+            var result = File.ReadAllText($"../../../tests/fixtures/temp/NfeXml.xml");
+            var expect = File.ReadAllText($"../../../tests/fixtures/NfeXml-{chave}.xml");
+            
+            Assert.Equal(result, expect);
         }
         # endregion
 		
@@ -147,9 +157,14 @@ namespace Consyste.Clients.Portal
         [InlineData(ModeloDocumento.Cte, FormatoDocumento.Pdf, "5d48fed3885f200001758e54")]
         public async Task TestBaixaDocumentoCtePdfSalva(ModeloDocumento modelo, FormatoDocumento formato, string chave)
         {      
-           var res = await Cliente().BaixaDocumento(modelo, formato, chave);
-			
-		   res.Salva($"../../../tests/fixtures/temp/CtePdf.pdf");
+            var res = await Cliente().BaixaDocumento(modelo, formato, chave);
+
+		    res.Salva($"../../../tests/fixtures/temp/CtePdf.pdf");
+
+            var result = new FileStream($"../../../tests/fixtures/temp/CtePdf.pdf", FileMode.Open);
+            var expect = new FileStream($"../../../tests/fixtures/CtePdf-{chave}.pdf", FileMode.Open);
+            
+            Assert.Equal(result.Length, expect.Length); 
         }
 		
 		[Theory()]
@@ -168,8 +183,13 @@ namespace Consyste.Clients.Portal
         public async Task TestBaixaDocumentoCteXmlSalva(ModeloDocumento modelo, FormatoDocumento formato, string chave)
         {      
             var res = await Cliente().BaixaDocumento(modelo, formato, chave);
-            
+
             res.Salva($"../../../tests/fixtures/temp/CteXml.xml");
+
+            var result = File.ReadAllText($"../../../tests/fixtures/temp/CteXml.xml");
+            var expect = File.ReadAllText($"../../../tests/fixtures/CteXml-{chave}.xml");
+            
+            Assert.Equal(result, expect); 
         }
         # endregion
         
