@@ -13,12 +13,12 @@ namespace Consyste.Clients.Portal
         }
 
         public void Salva(string caminho)
-        {   
+        {
             using (Stream stream = res.GetResponseStream())
             {
                 using (FileStream fileStream = File.Create(caminho))
                 {
-                stream.CopyTo(fileStream);
+                    stream.CopyTo(fileStream);
                 }
             }
         }
@@ -26,12 +26,12 @@ namespace Consyste.Clients.Portal
         public string Conteudo
         {
             get
-            { 
-                using(Stream stream = res.GetResponseStream())
-                { 
-                    using (StreamReader reader = new StreamReader(stream)){
-                    string text = reader.ReadToEnd();
-                    return text;
+            {
+                using (Stream stream = res.GetResponseStream())
+                {
+                    using (StreamReader reader = new StreamReader(stream))
+                    {
+                        return reader.ReadToEnd();
                     }
                 }
             }

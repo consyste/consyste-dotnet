@@ -18,31 +18,35 @@ namespace Consyste.Clients.Portal
         }
 
         public async Task<ListagemDocumentos> ListaDocumentos(ModeloDocumento modelo, FiltroDocumento filtro, string[] campos = null, string consulta = null)
-        {   
+        {
             return await ListaDocumentos(CodigoModelo(modelo), CodigoFiltro(filtro), campos, consulta);
         }
 
         public async Task<ListagemDocumentos> ListaDocumentos(string modelo, string filtro, string[] campos = null, string consulta = null)
-        {   
+        {
             string campoParametro = "";
             string consultaParametro = "";
 
-            if (campos != null) {
+            if (campos != null)
+            {
                 foreach (string campo in campos)
-                {   
+                {
                     campoParametro = campoParametro + campo + ",";
                 }
                 campoParametro = "campos=" + campoParametro;
             }
 
-            if (consulta != null) {
+            if (consulta != null)
+            {
                 consultaParametro = "q=" + Uri.EscapeUriString(consulta);
             }
 
             var res = await PerformGet($"/api/v1/{modelo}/lista/{filtro}?{consultaParametro}&{campoParametro}");
 
             if (res.StatusCode != HttpStatusCode.OK)
+            {
                 throw new ApplicationException($"Erro {res.StatusCode} ao solicitar listagem de documentos");
+            }
 
             return ListagemDocumentos.FromJSON(res.GetResponseStream());
         }
@@ -57,8 +61,10 @@ namespace Consyste.Clients.Portal
             var res = await PerformGet($"/api/v1/{modelo}/lista/continua/{token}");
 
             if (res.StatusCode != HttpStatusCode.OK)
+            {
                 throw new ApplicationException($"Erro {res.StatusCode} ao continuar listagem de documentos");
-
+            }
+   
             return ListagemDocumentos.FromJSON(res.GetResponseStream());
         }
 
@@ -72,8 +78,9 @@ namespace Consyste.Clients.Portal
             var res = await PerformGet($"/api/v1/{modelo}/{chave}/download{formato}");
 
             if (res.StatusCode != HttpStatusCode.OK)
+            {
                 throw new ApplicationException($"Erro {res.StatusCode} ao baixar documento");
-
+            }
             return new Download(res);
         }
 
