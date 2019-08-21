@@ -7,20 +7,20 @@ namespace Consyste.Clients.Portal
 {
     public class Documento
     {
-        public string id { get; }
-        public string chave { get; }
-        public string emitido_em { get; }
-        public int serie { get; }
-        public int numero { get; }
-        public string valor { get; }
-        public string situacao_custodia { get; }
-        public int situacao_sefaz { get; }
-        public string emit_cnpj { get; }
-        public string emit_nome { get; }
-        public string dest_cnpj { get; }
-        public string dest_nome { get; }
-        public string toma_nome { get; }
-        public string toma_cnpj { get; }
+        public string id { get; set; }
+        public string chave { get; set; }
+        public string emitido_em { get; set; }
+        public int serie { get; set; }
+        public int numero { get; set; }
+        public string valor { get; set; }
+        public string situacao_custodia { get; set; }
+        public int situacao_sefaz { get; set; }
+        public string emit_cnpj { get; set; }
+        public string emit_nome { get; set; }
+        public string dest_cnpj { get; set; }
+        public string dest_nome { get; set; }
+        public string toma_nome { get; set; }
+        public string toma_cnpj { get; set; }
     }
 
     public class ListagemDocumentos
@@ -31,12 +31,12 @@ namespace Consyste.Clients.Portal
         {
         }
 
-        public long total { get; }
-        public string proxima_pagina { get; }
-        public List<Documento> documentos { get; }
+        public long total { get; set; }
+        public string proxima_pagina { get; set; }
+        public List<Documento> documentos { get; set; }
 
         public static ListagemDocumentos FromJSON(Stream stream)
-        {   
+        {
             using (var sr = new StreamReader(stream))
             {
                 using (var jr = new JsonTextReader(sr))
