@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Threading.Tasks;
+using System.Text;
 
 namespace Consyste.Clients.Portal
 {
@@ -48,7 +49,7 @@ namespace Consyste.Clients.Portal
                 throw new ApplicationException($"Erro {res.StatusCode} ao solicitar listagem de documentos");
             }
 
-            return ListagemDocumentos.FromJSON(res.GetResponseStream());
+            return JsonHandler<ListagemDocumentos>.Desserializar(res.GetResponseStream());
         }
 
         public async Task<ListagemDocumentos> ContinuaListagem(ModeloDocumento modelo, string token)
@@ -64,8 +65,65 @@ namespace Consyste.Clients.Portal
             {
                 throw new ApplicationException($"Erro {res.StatusCode} ao continuar listagem de documentos");
             }
-   
-            return ListagemDocumentos.FromJSON(res.GetResponseStream());
+
+            return JsonHandler<ListagemDocumentos>.Desserializar(res.GetResponseStream());
+        }
+
+        public async Task<HttpStatusCode> ManifestacaoNfe(ModeloDocumento modelo, string id, string manifestacao, string justificativa = null)
+        {
+            return await ManifestacaoNfe(CodigoModelo(modelo), id, manifestacao, justificativa);
+        }
+        public async Task<HttpStatusCode> ManifestacaoNfe(string modelo, string id, string manifestacao, string justificativa = null)
+        {
+            var res = await PerformPost($"/api/v1/{modelo}/{id}/manifestar/{manifestacao}?justificativa={justificativa}");
+
+            if (res.StatusCode != HttpStatusCode.OK)
+            {
+                throw new ApplicationException($"Erro {res.StatusCode} ao continuar listagem de documentos");
+            }
+
+            return res.StatusCode;
+        }
+
+        public async Task<PortariaDocumento> DecisaoPortariaNFe(string chave, string decisao, string observacao = null)
+        {
+            var res = await PerformPost($"/api/v1/nfe/{chave}/decisao-portaria/{decisao}", observacao);
+
+            if (res.StatusCode != HttpStatusCode.OK)
+            {
+                throw new ApplicationException($"Erro {res.StatusCode} ao continuar listagem de documentos");
+            }
+
+            return JsonHandler<PortariaDocumento>.Desserializar(res.GetResponseStream());
+        }
+
+        public async Task<SolicitaDownload> SolicitaDownload(ModeloDocumento modelo, FiltroDocumento filtro, FormatoDocumento formato, string consulta = "")
+        {
+            return await SolicitaDownload(CodigoModelo(modelo), CodigoFiltro(filtro), CodigoFormato(formato), consulta);
+        }
+
+        public async Task<SolicitaDownload> SolicitaDownload(string modelo, string filtro, string formato, string consulta = "")
+        {
+            var res = await PerformPost($"/api/v1/{modelo}/lista/{filtro}/download/{formato}?q={consulta}");
+
+            if (res.StatusCode != HttpStatusCode.OK)
+            {
+                throw new ApplicationException($"Erro {res.StatusCode} ao solicitar documento");
+            }
+
+            return JsonHandler<SolicitaDownload>.Desserializar(res.GetResponseStream());
+        }
+
+        public async Task<ConsultaDownload> ConsultaDownloadSolicitado(string id)
+        {
+            var res = await PerformGet($"/api/v1/download/{id}");
+
+            if (res.StatusCode != HttpStatusCode.OK)
+            {
+                throw new ApplicationException($"Erro {res.StatusCode} ao consultar o download solicitado");
+            }
+
+            return JsonHandler<ConsultaDownload>.Desserializar(res.GetResponseStream());
         }
 
         public async Task<Download> BaixaDocumento(ModeloDocumento modelo, FormatoDocumento formato, string chave)
@@ -81,6 +139,7 @@ namespace Consyste.Clients.Portal
             {
                 throw new ApplicationException($"Erro {res.StatusCode} ao baixar documento");
             }
+
             return new Download(res);
         }
 
@@ -90,6 +149,31 @@ namespace Consyste.Clients.Portal
             req.Headers.Add(HttpRequestHeader.UserAgent, "Consyst-e .NET Client 1.0");
             req.Headers.Add(HttpRequestHeader.Accept, "application/json");
             req.Headers.Add("X-Consyste-Auth-Token", Config.ApiKey);
+
+            return (HttpWebResponse) await req.GetResponseAsync();
+        }
+
+        private async Task<HttpWebResponse> PerformPost(string uri, string postData = null)
+        {
+            HttpWebRequest req = (HttpWebRequest) HttpWebRequest.Create(Config.UrlBase + uri);
+
+            req.Method = "POST";
+            req.Headers.Add(HttpRequestHeader.UserAgent, "Consyst-e .NET Client 1.0");
+            req.Headers.Add(HttpRequestHeader.Accept, "application/json");
+            req.Headers.Add("X-Consyste-Auth-Token", Config.ApiKey);
+
+            if (postData != null)
+            {
+                var data = Encoding.ASCII.GetBytes(postData);
+
+                req.ContentType = "Content-Type: application/json";
+                req.ContentLength = data.Length;
+
+                using (var stream = req.GetRequestStream())
+                {
+                    stream.Write(data, 0, data.Length);
+                }
+            }
 
             return (HttpWebResponse) await req.GetResponseAsync();
         }

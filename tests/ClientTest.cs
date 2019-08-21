@@ -75,7 +75,7 @@ namespace Consyste.Clients.Portal
 
             Assert.Equal(total, res.total);
         }
-        #endregion
+        # endregion
 
         # region ContinuaListagemCte
         [Theory()]
@@ -86,6 +86,59 @@ namespace Consyste.Clients.Portal
             var res = await Cliente().ContinuaListagem(modelo, token);
 
             Assert.Equal(total, res.total);
+        }
+        # endregion
+
+        # region Decisão PortariaNFe
+        [Fact]
+        public async Task TestDecisaoPortariaNFe()
+        {
+            string chave = "chave";
+            string decisao = "receber";
+            string observacao = "{'observacao': 'Mensagem com uma observação'}";
+
+            var res = await Cliente().DecisaoPortariaNFe(chave, decisao, observacao);
+
+            Assert.Equal(chave, res.documento.chave);
+        }
+        # endregion
+
+        # region Manifestação destinatário NFe
+        [Fact]
+        public async Task TestManifestacaoNfe()
+        {
+            var modelo = ModeloDocumento.Nfe;
+            string id = "id";
+            string manifestacao = "confirmada";
+            string justificativa = "obrigatória no caso de operacao_nao_realizada";
+
+            var expect = System.Net.HttpStatusCode.OK;
+
+            var res = await Cliente().ManifestacaoNfe(modelo, id, manifestacao, justificativa);
+
+            Assert.Equal(expect, res);
+        }
+        # endregion
+
+        # region SolicitaDownload
+        [Theory()]
+        [InlineData(ModeloDocumento.Nfe, FiltroDocumento.Emitidos, FormatoDocumento.Pdf, "")]
+        public async Task TestSolicitaDownload(ModeloDocumento modelo, FiltroDocumento filtro, FormatoDocumento formato, string consulta)
+        {
+            var res = await Cliente().SolicitaDownload(modelo, filtro, formato, consulta);
+
+            Assert.StartsWith("", res.id);
+        }
+        # endregion
+
+        # region ConsultaDownloadSolicitado
+        [Theory()]
+        [InlineData("")]
+        public async Task TestConsultaDownload(string id)
+        {
+            var res = await Cliente().ConsultaDownloadSolicitado(id);
+
+            Assert.StartsWith("", res.id);
         }
         # endregion
 
@@ -140,7 +193,7 @@ namespace Consyste.Clients.Portal
 
             Assert.Equal(result, expect);
         }
-        #endregion
+        # endregion
 
         # region BaixaDocumentosCte
         [Theory()]
@@ -193,7 +246,7 @@ namespace Consyste.Clients.Portal
 
             Assert.Equal(result, expect);
         }
-        #endregion
+        # endregion
 
         Client Cliente()
         {
