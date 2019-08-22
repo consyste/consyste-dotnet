@@ -1,0 +1,16 @@
+{
+  "documento": {
+    "id": "53d2f08f9711f6abe20009e7",
+    "chave": "35140443283811001040550010001000151082422890",
+    "emitido_em": "2014-04-08T00:00:00-03:00",
+    "serie": 1,
+    "numero": 100015,
+    "valor": "111.4",
+    "situacao_custodia": "ok",
+    "situacao_sefaz": 100,
+    "emit_cnpj": "43283811001040",
+    "emit_nome": "Kalunga Comercio Industria Grafica Ltda",
+    "dest_cnpj": "10967573000142",
+    "dest_nome": "MEp Consultoria"
+  }
+}

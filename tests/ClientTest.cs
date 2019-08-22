@@ -1,6 +1,7 @@
 using Xunit;
 using System.Threading.Tasks;
 using System.IO;
+using System.Text;
 
 namespace Consyste.Clients.Portal
 {
@@ -126,7 +127,7 @@ namespace Consyste.Clients.Portal
         {
             string xml = "";
             string terceiro_cnpj = "";
-            
+
             string id = "";
 
             var res = await Cliente().EnviaDocumento(xml, terceiro_cnpj);
@@ -260,6 +261,89 @@ namespace Consyste.Clients.Portal
             var expect = File.ReadAllText($"../../../tests/fixtures/CteXml-{chave}.xml");
 
             Assert.Equal(result, expect);
+        }
+        #endregion
+
+        #region Testa DesserializarJson
+        [Fact]
+        public void TestDesserializarDadosDocumento()
+        {
+            string caminho = "../../../tests/fixtures/DocumentosJson/DadosDocumento.txt";
+            using (BinaryReader reader = new BinaryReader(File.Open(caminho, FileMode.Open)))
+            {
+                var stream = reader.BaseStream;
+
+                var res = JsonHandler<DadosDocumento>.Desserializar(stream);
+
+                Assert.Equal("SP", res.dest_end_uf);
+                Assert.Equal("1", res.ambiente_sefaz_id);
+                Assert.Equal("551045bf706f725f36262201", res.historicos[0].id);
+                Assert.Equal("7891308759621", res.itens[0].codigo);
+            }
+        }
+
+        [Fact]
+        public void TestDesserializarRootDocumento()
+        {
+            string caminho = "../../../tests/fixtures/DocumentosJson/RootDocumento.txt";
+            using (BinaryReader reader = new BinaryReader(File.Open(caminho, FileMode.Open)))
+            {
+                var stream = reader.BaseStream;
+                var res = JsonHandler<RootDocumento>.Desserializar(stream);
+
+                Assert.Equal("53d2f08f9711f6abe20009e7", res.documento.id);
+                Assert.Equal(1, res.documento.serie);
+                Assert.Equal("111.4", res.documento.valor);
+            }
+        }
+
+        [Fact]
+        public void TestDesserializarSolicitaDownload()
+        {
+            string caminho = "../../../tests/fixtures/DocumentosJson/SolicitaDownload.txt";
+            using (BinaryReader reader = new BinaryReader(File.Open(caminho, FileMode.Open)))
+            {
+                var stream = reader.BaseStream;
+                var res = JsonHandler<SolicitaDownload>.Desserializar(stream);
+
+                Assert.Equal("53eb0ce86661621e4e000000", res.id);
+                Assert.Equal("xml", res.formato);
+                Assert.Equal("nfe", res.tipo_documento);
+            }
+        }
+
+        [Fact]
+        public void TestDesserializarConsultaDownload()
+        {
+            string caminho = "../../../tests/fixtures/DocumentosJson/ConsultaDownload.txt";
+            using (BinaryReader reader = new BinaryReader(File.Open(caminho, FileMode.Open)))
+            {
+                var stream = reader.BaseStream;
+
+                var res = JsonHandler<ConsultaDownload>.Desserializar(stream);
+
+                Assert.Equal("53d71e27666162088d040000", res.id);
+                Assert.Equal("xml", res.formato);
+                Assert.Equal("nfe", res.tipo_documento);
+                Assert.Equal("http://download-consyste.s3.amazonaws.com/xmls_2014-07-29T0108.zip", res.arquivo);
+            }
+        }
+
+        [Fact]
+        public void TestDesserializarListagemDocumentos()
+        {
+            string caminho = "../../../tests/fixtures/DocumentosJson/ListagemDocumentos.txt";
+            using (BinaryReader reader = new BinaryReader(File.Open(caminho, FileMode.Open)))
+            {
+                var stream = reader.BaseStream;
+
+                var res = JsonHandler<ListagemDocumentos>.Desserializar(stream);
+
+                Assert.Equal(3, res.total);
+                Assert.Equal("c2NhbjswOzE7dG90YWxfaGl0czozOw==", res.proxima_pagina);
+                Assert.Equal("53d2f08f9711f6abe20009e7", res.documentos[0].id);
+                Assert.Equal(1, res.documentos[0].serie);
+            }
         }
         # endregion
 

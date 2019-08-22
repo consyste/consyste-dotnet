@@ -195,7 +195,7 @@ namespace Consyste.Clients.Portal
 
             if (postData != null)
             {
-                var data = Encoding.ASCII.GetBytes(postData);
+                var data = Encoding.UTF8.GetBytes(postData);
 
                 req.ContentType = "Content-Type: application/json";
                 req.ContentLength = data.Length;
