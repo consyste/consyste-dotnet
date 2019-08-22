@@ -94,8 +94,8 @@ namespace Consyste.Clients.Portal
         public async Task TestDecisaoPortariaNFe()
         {
             string chave = "chave";
-            string decisao = "receber";
-            string observacao = "{'observacao': 'Mensagem com uma observação'}";
+            var decisao = Decisao.Receber;
+            string observacao = "Mensagem com uma observação";
 
             var res = await Cliente().DecisaoPortariaNFe(chave, decisao, observacao);
 
@@ -109,7 +109,7 @@ namespace Consyste.Clients.Portal
         {
             var modelo = ModeloDocumento.Nfe;
             string id = "id";
-            string manifestacao = "confirmada";
+            var manifestacao = Manifestacao.Confirmada;
             string justificativa = "obrigatória no caso de operacao_nao_realizada";
 
             var expect = System.Net.HttpStatusCode.OK;
@@ -117,6 +117,21 @@ namespace Consyste.Clients.Portal
             var res = await Cliente().ManifestacaoNfe(modelo, id, manifestacao, justificativa);
 
             Assert.Equal(expect, res);
+        }
+        # endregion
+
+        # region EnviaDocumento
+        [Fact]
+        public async Task TestEnviaDocumento()
+        {
+            string xml = "";
+            string terceiro_cnpj = "";
+            
+            string id = "";
+
+            var res = await Cliente().EnviaDocumento(xml, terceiro_cnpj);
+
+            Assert.Equal(id, res.documento.id);
         }
         # endregion
 

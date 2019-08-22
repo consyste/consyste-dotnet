@@ -22,7 +22,6 @@ namespace Consyste.Clients.Portal
         {
             return await ListaDocumentos(CodigoModelo(modelo), CodigoFiltro(filtro), campos, consulta);
         }
-
         public async Task<ListagemDocumentos> ListaDocumentos(string modelo, string filtro, string[] campos = null, string consulta = null)
         {
             string campoParametro = "";
@@ -56,7 +55,6 @@ namespace Consyste.Clients.Portal
         {
             return await ContinuaListagem(CodigoModelo(modelo), token);
         }
-
         public async Task<ListagemDocumentos> ContinuaListagem(string modelo, string token)
         {
             var res = await PerformGet($"/api/v1/{modelo}/lista/continua/{token}");
@@ -69,9 +67,9 @@ namespace Consyste.Clients.Portal
             return JsonHandler<ListagemDocumentos>.Desserializar(res.GetResponseStream());
         }
 
-        public async Task<HttpStatusCode> ManifestacaoNfe(ModeloDocumento modelo, string id, string manifestacao, string justificativa = null)
+        public async Task<HttpStatusCode> ManifestacaoNfe(ModeloDocumento modelo, string id, Manifestacao manifestacao, string justificativa = null)
         {
-            return await ManifestacaoNfe(CodigoModelo(modelo), id, manifestacao, justificativa);
+            return await ManifestacaoNfe(CodigoModelo(modelo), id, CodigoManifestacao(manifestacao), justificativa);
         }
         public async Task<HttpStatusCode> ManifestacaoNfe(string modelo, string id, string manifestacao, string justificativa = null)
         {
@@ -85,6 +83,10 @@ namespace Consyste.Clients.Portal
             return res.StatusCode;
         }
 
+        public async Task<RootDocumento> DecisaoPortariaNFe(string chave, Decisao decisao, string observacao = null)
+        {
+            return await DecisaoPortariaNFe(chave, CodigoDecisao(decisao), observacao);
+        }
         public async Task<RootDocumento> DecisaoPortariaNFe(string chave, string decisao, string observacao = null)
         {
             string postData = "{ " + $"observacao: {observacao}" + " }";
@@ -102,7 +104,6 @@ namespace Consyste.Clients.Portal
         {
             return await ConsultaDocumento(CodigoModelo(modelo), id);
         }
-
         public async Task<DadosDocumento> ConsultaDocumento(string modelo, string id)
         {
             var res = await PerformGet($"/api/v1/{modelo}/{id}");
@@ -133,7 +134,6 @@ namespace Consyste.Clients.Portal
         {
             return await SolicitaDownload(CodigoModelo(modelo), CodigoFiltro(filtro), CodigoFormato(formato), consulta);
         }
-
         public async Task<SolicitaDownload> SolicitaDownload(string modelo, string filtro, string formato, string consulta = "")
         {
             var res = await PerformPost($"/api/v1/{modelo}/lista/{filtro}/download/{formato}?q={consulta}");
@@ -162,7 +162,6 @@ namespace Consyste.Clients.Portal
         {
             return await BaixaDocumento(CodigoModelo(modelo), CodigoFormato(formato), chave);
         }
-
         public async Task<Download> BaixaDocumento(string modelo, string formato, string chave)
         {
             var res = await PerformGet($"/api/v1/{modelo}/{chave}/download{formato}");
@@ -210,6 +209,7 @@ namespace Consyste.Clients.Portal
             return (HttpWebResponse) await req.GetResponseAsync();
         }
 
+        # region Parâmetros
         private string CodigoModelo(ModeloDocumento modelo)
         {
             switch (modelo)
@@ -252,5 +252,38 @@ namespace Consyste.Clients.Portal
                     throw new ArgumentException($"Filtro desconhecido: {filtro}", nameof(filtro));
             }
         }
+
+        private string CodigoManifestacao(Manifestacao manifestacao)
+        {
+            switch (manifestacao)
+            {
+                case Manifestacao.Confirmada:
+                    return "confirmada";
+                case Manifestacao.Desconhecida:
+                    return "desconhecida";
+                case Manifestacao.OperacaoNaoRealizada:
+                    return "operacao_nao_realizada";
+                case Manifestacao.Ciencia:
+                    return "ciencia";
+                default:
+                    throw new ArgumentException($"Manifestação desconhecida: {manifestacao}", nameof(manifestacao));
+            }
+        }
+
+        private string CodigoDecisao(Decisao decisao)
+        {
+            switch (decisao)
+            {
+                case Decisao.Receber:
+                    return "receber";
+                case Decisao.Devolver:
+                    return "devolver";
+                case Decisao.ReceberComPendencia:
+                    return "receber_com_pendencia";
+                default:
+                    throw new ArgumentException($"Decisão desconhecida: {decisao}", nameof(decisao));
+            }
+        }
+        # endregion
     }
 }
