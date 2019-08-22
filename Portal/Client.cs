@@ -85,16 +85,48 @@ namespace Consyste.Clients.Portal
             return res.StatusCode;
         }
 
-        public async Task<PortariaDocumento> DecisaoPortariaNFe(string chave, string decisao, string observacao = null)
+        public async Task<RootDocumento> DecisaoPortariaNFe(string chave, string decisao, string observacao = null)
         {
-            var res = await PerformPost($"/api/v1/nfe/{chave}/decisao-portaria/{decisao}", observacao);
+            string postData = "{ " + $"observacao: {observacao}" + " }";
+            var res = await PerformPost($"/api/v1/nfe/{chave}/decisao-portaria/{decisao}", postData);
 
             if (res.StatusCode != HttpStatusCode.OK)
             {
-                throw new ApplicationException($"Erro {res.StatusCode} ao continuar listagem de documentos");
+                throw new ApplicationException($"Erro {res.StatusCode} ao salvar a decisão da portaria ");
             }
 
-            return JsonHandler<PortariaDocumento>.Desserializar(res.GetResponseStream());
+            return JsonHandler<RootDocumento>.Desserializar(res.GetResponseStream());
+        }
+
+        public async Task<DadosDocumento> ConsultaDocumento(ModeloDocumento modelo, string id)
+        {
+            return await ConsultaDocumento(CodigoModelo(modelo), id);
+        }
+
+        public async Task<DadosDocumento> ConsultaDocumento(string modelo, string id)
+        {
+            var res = await PerformGet($"/api/v1/{modelo}/{id}");
+
+            if (res.StatusCode != HttpStatusCode.OK)
+            {
+                throw new ApplicationException($"Erro {res.StatusCode} ao consultar documento");
+            }
+
+            return JsonHandler<DadosDocumento>.Desserializar(res.GetResponseStream());
+        }
+
+        public async Task<RootDocumento> EnviaDocumento(string xml, string terceiro_cnpj = null)
+        {
+            string postData = "{ " + $"xml: {xml}, terceiro_cnpj: {terceiro_cnpj}" + " }";
+
+            var res = await PerformPost($"/api/v1/envio", postData);
+
+            if (res.StatusCode != HttpStatusCode.OK)
+            {
+                throw new ApplicationException($"Erro {res.StatusCode} ao enviar documento");
+            }
+
+            return JsonHandler<RootDocumento>.Desserializar(res.GetResponseStream());
         }
 
         public async Task<SolicitaDownload> SolicitaDownload(ModeloDocumento modelo, FiltroDocumento filtro, FormatoDocumento formato, string consulta = "")
