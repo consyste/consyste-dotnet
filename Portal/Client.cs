@@ -5,6 +5,9 @@ using System.Text;
 
 namespace Consyste.Clients.Portal
 {
+    /// <summary>
+    /// Esta classe contem os métodos para realizar os acessos à API da Consyste.
+    /// </summary>
     public class Client
     {
         public Configuration Config { get; }
@@ -18,10 +21,16 @@ namespace Consyste.Clients.Portal
             Config = config;
         }
 
+        /// <summary>
+        /// Obtém uma lista com dados dos documentos constantes no Portal.
+        /// </summary>
         public async Task<ListagemDocumentos> ListaDocumentos(ModeloDocumento modelo, FiltroDocumento filtro, string[] campos = null, string consulta = null)
         {
             return await ListaDocumentos(CodigoModelo(modelo), CodigoFiltro(filtro), campos, consulta);
         }
+        /// <summary>
+        /// Obtém uma lista com dados dos documentos constantes no Portal.
+        /// </summary>
         public async Task<ListagemDocumentos> ListaDocumentos(string modelo, string filtro, string[] campos = null, string consulta = null)
         {
             string campoParametro = "";
@@ -51,10 +60,16 @@ namespace Consyste.Clients.Portal
             return JsonHandler<ListagemDocumentos>.Desserializar(res.GetResponseStream());
         }
 
+        /// <summary>
+        /// Para continuar uma busca da listagem dos documentos.
+        /// </summary>
         public async Task<ListagemDocumentos> ContinuaListagem(ModeloDocumento modelo, string token)
         {
             return await ContinuaListagem(CodigoModelo(modelo), token);
         }
+        /// <summary>
+        /// Para continuar uma busca da listagem dos documentos.
+        /// </summary>
         public async Task<ListagemDocumentos> ContinuaListagem(string modelo, string token)
         {
             var res = await PerformGet($"/api/v1/{modelo}/lista/continua/{token}");
@@ -67,10 +82,16 @@ namespace Consyste.Clients.Portal
             return JsonHandler<ListagemDocumentos>.Desserializar(res.GetResponseStream());
         }
 
+        /// <summary>
+        /// Obtém os dados de um documento constante no Portal.
+        /// </summary>
         public async Task<Documento> ConsultaDocumento(ModeloDocumento modelo, string id)
         {
             return await ConsultaDocumento(CodigoModelo(modelo), id);
         }
+        /// <summary>
+        /// Obtém os dados de um documento constante no Portal.
+        /// </summary>
         public async Task<Documento> ConsultaDocumento(string modelo, string id)
         {
             var res = await PerformGet($"/api/v1/{modelo}/{id}");
@@ -83,9 +104,12 @@ namespace Consyste.Clients.Portal
             return JsonHandler<Documento>.Desserializar(res.GetResponseStream());
         }
 
-        public async Task<RootDocumento> EnviaDocumento(string xml, string terceiro_cnpj = null)
+        /// <summary>
+        /// Envia um XML individual para custódia. Pode ser utilizado para enviar NF-e ou CT-e. Tanto podem ser enviados documentos relacionados ao CNPJ quanto documentos de terceiros.
+        /// </summary>
+        public async Task<RootDocumento> EnviaDocumento(string xml, string terceiroCnpj = null)
         {
-            string postData = "{ " + $"xml: {xml}, terceiro_cnpj: {terceiro_cnpj}" + " }";
+            string postData = "{ " + $"xml: {xml}, terceiro_cnpj: {terceiroCnpj}" + " }";
 
             var res = await PerformPost($"/api/v1/envio", postData);
 
@@ -97,10 +121,16 @@ namespace Consyste.Clients.Portal
             return JsonHandler<RootDocumento>.Desserializar(res.GetResponseStream());
         }
 
+        /// <summary>
+        /// Solicita os arquivos XML ou PDF de um lote de documentos fiscais.
+        /// </summary>        
         public async Task<SolicitaDownload> SolicitaDownload(ModeloDocumento modelo, FiltroDocumento filtro, FormatoDocumento formato, string consulta = "")
         {
             return await SolicitaDownload(CodigoModelo(modelo), CodigoFiltro(filtro), CodigoFormato(formato), consulta);
         }
+        /// <summary>
+        /// Solicita os arquivos XML ou PDF de um lote de documentos fiscais.
+        /// </summary>  
         public async Task<SolicitaDownload> SolicitaDownload(string modelo, string filtro, string formato, string consulta = "")
         {
             var res = await PerformPost($"/api/v1/{modelo}/lista/{filtro}/download/{formato}?q={consulta}");
@@ -113,6 +143,9 @@ namespace Consyste.Clients.Portal
             return JsonHandler<SolicitaDownload>.Desserializar(res.GetResponseStream());
         }
 
+        /// <summary>
+        /// Consulta a disponibilidade de download dos arquivos previamente solicitados.
+        /// </summary>
         public async Task<ConsultaDownload> ConsultaDownloadSolicitado(string id)
         {
             var res = await PerformGet($"/api/v1/download/{id}");
@@ -125,10 +158,16 @@ namespace Consyste.Clients.Portal
             return JsonHandler<ConsultaDownload>.Desserializar(res.GetResponseStream());
         }
 
+        /// <summary>
+        /// Obtém o XML ou PDF de um documento constante no Portal.
+        /// </summary>
         public async Task<Download> BaixaDocumento(ModeloDocumento modelo, FormatoDocumento formato, string chave)
         {
             return await BaixaDocumento(CodigoModelo(modelo), CodigoFormato(formato), chave);
         }
+        /// <summary>
+        /// Obtém o XML ou PDF de um documento constante no Portal.
+        /// </summary>
         public async Task<Download> BaixaDocumento(string modelo, string formato, string chave)
         {
             var res = await PerformGet($"/api/v1/{modelo}/{chave}/download{formato}");
@@ -141,10 +180,16 @@ namespace Consyste.Clients.Portal
             return new Download(res);
         }
 
+        /// <summary>
+        /// A empresa poderá informar a manifestação acerca de suas notas destinadas à SEFAZ.
+        /// </summary>
         public async Task<HttpStatusCode> ManifestacaoNfe(ModeloDocumento modelo, string id, Manifestacao manifestacao, string justificativa = null)
         {
             return await ManifestacaoNfe(CodigoModelo(modelo), id, CodigoManifestacao(manifestacao), justificativa);
         }
+        /// <summary>
+        /// A empresa poderá informar a manifestação acerca de suas notas destinadas à SEFAZ.
+        /// </summary>
         public async Task<HttpStatusCode> ManifestacaoNfe(string modelo, string id, string manifestacao, string justificativa = null)
         {
             string ParametroJustificativa = "";
@@ -163,10 +208,16 @@ namespace Consyste.Clients.Portal
             return res.StatusCode;
         }
 
+        /// <summary>
+        /// Salva a decisão da portaria em documento NF-e.
+        /// </summary>
         public async Task<RootDocumento> DecisaoPortariaNFe(string chave, Decisao decisao, string observacao = null)
         {
             return await DecisaoPortariaNFe(chave, CodigoDecisao(decisao), observacao);
         }
+        /// <summary>
+        /// Salva a decisão da portaria em documento NF-e.
+        /// </summary>
         public async Task<RootDocumento> DecisaoPortariaNFe(string chave, string decisao, string observacao = null)
         {
             string postData = null;
@@ -186,6 +237,9 @@ namespace Consyste.Clients.Portal
             return JsonHandler<RootDocumento>.Desserializar(res.GetResponseStream());
         }
 
+        /// <summary>
+        /// Método responsável por realizar as requisições no método GET.
+        /// </summary>
         private async Task<HttpWebResponse> PerformGet(string uri)
         {
             var req = (HttpWebRequest) HttpWebRequest.Create(Config.UrlBase + uri);
@@ -196,6 +250,9 @@ namespace Consyste.Clients.Portal
             return (HttpWebResponse) await req.GetResponseAsync();
         }
 
+        /// <summary>
+        /// Método responsável por realizar as requisições no método POST.
+        /// </summary>
         private async Task<HttpWebResponse> PerformPost(string uri, string postData = null)
         {
             HttpWebRequest req = (HttpWebRequest) HttpWebRequest.Create(Config.UrlBase + uri);

@@ -3,6 +3,9 @@ using System.IO;
 
 namespace Consyste.Clients.Portal
 {
+    /// <summary>
+    /// Esta classe é responsável pelo download dos documentos.
+    /// </summary>
     public class Download
     {
         private HttpWebResponse res;
@@ -11,7 +14,10 @@ namespace Consyste.Clients.Portal
         {
             this.res = res;
         }
-
+        /// <summary>
+        /// Salva o documento no local designado.
+        /// </summary>
+        /// <param name="caminho">O local onde o documento vai ser salvo, como, "Folder/Documento.xml".</param>
         public void Salva(string caminho)
         {
             using (Stream stream = res.GetResponseStream())
@@ -23,6 +29,9 @@ namespace Consyste.Clients.Portal
             }
         }
 
+        /// <summary>
+        /// Retorna o conteúdo do documento.
+        /// </summary>
         public string Conteudo
         {
             get
