@@ -67,44 +67,11 @@ namespace Consyste.Clients.Portal
             return JsonHandler<ListagemDocumentos>.Desserializar(res.GetResponseStream());
         }
 
-        public async Task<HttpStatusCode> ManifestacaoNfe(ModeloDocumento modelo, string id, Manifestacao manifestacao, string justificativa = null)
-        {
-            return await ManifestacaoNfe(CodigoModelo(modelo), id, CodigoManifestacao(manifestacao), justificativa);
-        }
-        public async Task<HttpStatusCode> ManifestacaoNfe(string modelo, string id, string manifestacao, string justificativa = null)
-        {
-            var res = await PerformPost($"/api/v1/{modelo}/{id}/manifestar/{manifestacao}?justificativa={justificativa}");
-
-            if (res.StatusCode != HttpStatusCode.OK)
-            {
-                throw new ApplicationException($"Erro {res.StatusCode} ao continuar listagem de documentos");
-            }
-
-            return res.StatusCode;
-        }
-
-        public async Task<RootDocumento> DecisaoPortariaNFe(string chave, Decisao decisao, string observacao = null)
-        {
-            return await DecisaoPortariaNFe(chave, CodigoDecisao(decisao), observacao);
-        }
-        public async Task<RootDocumento> DecisaoPortariaNFe(string chave, string decisao, string observacao = null)
-        {
-            string postData = "{ " + $"observacao: {observacao}" + " }";
-            var res = await PerformPost($"/api/v1/nfe/{chave}/decisao-portaria/{decisao}", postData);
-
-            if (res.StatusCode != HttpStatusCode.OK)
-            {
-                throw new ApplicationException($"Erro {res.StatusCode} ao salvar a decisão da portaria ");
-            }
-
-            return JsonHandler<RootDocumento>.Desserializar(res.GetResponseStream());
-        }
-
-        public async Task<DadosDocumento> ConsultaDocumento(ModeloDocumento modelo, string id)
+        public async Task<Documento> ConsultaDocumento(ModeloDocumento modelo, string id)
         {
             return await ConsultaDocumento(CodigoModelo(modelo), id);
         }
-        public async Task<DadosDocumento> ConsultaDocumento(string modelo, string id)
+        public async Task<Documento> ConsultaDocumento(string modelo, string id)
         {
             var res = await PerformGet($"/api/v1/{modelo}/{id}");
 
@@ -113,7 +80,7 @@ namespace Consyste.Clients.Portal
                 throw new ApplicationException($"Erro {res.StatusCode} ao consultar documento");
             }
 
-            return JsonHandler<DadosDocumento>.Desserializar(res.GetResponseStream());
+            return JsonHandler<Documento>.Desserializar(res.GetResponseStream());
         }
 
         public async Task<RootDocumento> EnviaDocumento(string xml, string terceiro_cnpj = null)
@@ -172,6 +139,51 @@ namespace Consyste.Clients.Portal
             }
 
             return new Download(res);
+        }
+
+        public async Task<HttpStatusCode> ManifestacaoNfe(ModeloDocumento modelo, string id, Manifestacao manifestacao, string justificativa = null)
+        {
+            return await ManifestacaoNfe(CodigoModelo(modelo), id, CodigoManifestacao(manifestacao), justificativa);
+        }
+        public async Task<HttpStatusCode> ManifestacaoNfe(string modelo, string id, string manifestacao, string justificativa = null)
+        {
+            string ParametroJustificativa = "";
+
+            if (justificativa != null)
+            {
+                ParametroJustificativa = $"?justificativa={justificativa}";
+            }
+            var res = await PerformPost($"/api/v1/{modelo}/{id}/manifestar/{manifestacao}{ParametroJustificativa}");
+
+            if (res.StatusCode != HttpStatusCode.OK)
+            {
+                throw new ApplicationException($"Erro {res.StatusCode} ao continuar listagem de documentos");
+            }
+
+            return res.StatusCode;
+        }
+
+        public async Task<RootDocumento> DecisaoPortariaNFe(string chave, Decisao decisao, string observacao = null)
+        {
+            return await DecisaoPortariaNFe(chave, CodigoDecisao(decisao), observacao);
+        }
+        public async Task<RootDocumento> DecisaoPortariaNFe(string chave, string decisao, string observacao = null)
+        {
+            string postData = null;
+
+            if (observacao != null)
+            {
+                postData = "{ " + $"observacao: {observacao}" + " }";
+            }
+
+            var res = await PerformPost($"/api/v1/nfe/{chave}/decisao-portaria/{decisao}", postData);
+
+            if (res.StatusCode != HttpStatusCode.OK)
+            {
+                throw new ApplicationException($"Erro {res.StatusCode} ao salvar a decisão da portaria ");
+            }
+
+            return JsonHandler<RootDocumento>.Desserializar(res.GetResponseStream());
         }
 
         private async Task<HttpWebResponse> PerformGet(string uri)

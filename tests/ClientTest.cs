@@ -1,7 +1,6 @@
 using Xunit;
 using System.Threading.Tasks;
 using System.IO;
-using System.Text;
 
 namespace Consyste.Clients.Portal
 {
@@ -90,71 +89,27 @@ namespace Consyste.Clients.Portal
         }
         # endregion
 
-        # region Decisão PortariaNFe
-        [Fact]
-        public async Task TestDecisaoPortariaNFe()
-        {
-            string chave = "chave";
-            var decisao = Decisao.Receber;
-            string observacao = "Mensagem com uma observação";
-
-            var res = await Cliente().DecisaoPortariaNFe(chave, decisao, observacao);
-
-            Assert.Equal(chave, res.documento.chave);
-        }
-        # endregion
-
-        # region Manifestação destinatário NFe
-        [Fact]
-        public async Task TestManifestacaoNfe()
-        {
-            var modelo = ModeloDocumento.Nfe;
-            string id = "id";
-            var manifestacao = Manifestacao.Confirmada;
-            string justificativa = "obrigatória no caso de operacao_nao_realizada";
-
-            var expect = System.Net.HttpStatusCode.OK;
-
-            var res = await Cliente().ManifestacaoNfe(modelo, id, manifestacao, justificativa);
-
-            Assert.Equal(expect, res);
-        }
-        # endregion
-
-        # region EnviaDocumento
-        [Fact]
-        public async Task TestEnviaDocumento()
-        {
-            string xml = "";
-            string terceiro_cnpj = "";
-
-            string id = "";
-
-            var res = await Cliente().EnviaDocumento(xml, terceiro_cnpj);
-
-            Assert.Equal(id, res.documento.id);
-        }
-        # endregion
-
-        # region SolicitaDownload
+        # region ConsultaDocumentoNfe
         [Theory()]
-        [InlineData(ModeloDocumento.Nfe, FiltroDocumento.Emitidos, FormatoDocumento.Pdf, "")]
-        public async Task TestSolicitaDownload(ModeloDocumento modelo, FiltroDocumento filtro, FormatoDocumento formato, string consulta)
+        [InlineData(ModeloDocumento.Nfe, "43190743283811015939550010000139191316599936")]
+        [InlineData(ModeloDocumento.Nfe, "5d3f9a69e0897d0001bdfcc4")]
+        public async Task TestConsultaDocumentoNfe(ModeloDocumento modelo, string id)
         {
-            var res = await Cliente().SolicitaDownload(modelo, filtro, formato, consulta);
+            var res = await Cliente().ConsultaDocumento(modelo, id);
 
-            Assert.StartsWith("", res.id);
+            Assert.Equal("Kalunga Comercio Industria Grafica Ltda", res.emit_nome);
         }
         # endregion
 
-        # region ConsultaDownloadSolicitado
+        # region ConsultaDocumentoCte
         [Theory()]
-        [InlineData("")]
-        public async Task TestConsultaDownload(string id)
+        [InlineData(ModeloDocumento.Cte, "35190843244631002102570040004301431833984987")]
+        [InlineData(ModeloDocumento.Cte, "5d48fed3885f200001758e54")]
+        public async Task TestConsultaDocumentoCte(ModeloDocumento modelo, string id)
         {
-            var res = await Cliente().ConsultaDownloadSolicitado(id);
+            var res = await Cliente().ConsultaDocumento(modelo, id);
 
-            Assert.StartsWith("", res.id);
+            Assert.Equal("DELL COMPUTADORES DO BRASIL LTDA", res.toma_nome);
         }
         # endregion
 
@@ -264,51 +219,20 @@ namespace Consyste.Clients.Portal
         }
         #endregion
 
-        #region Testa DesserializarJson
+        # region Testa DesserializarJson
         [Fact]
-        public void TestDesserializarDadosDocumento()
+        public void TestDesserializarConsultaDocumento()
         {
-            string caminho = "../../../tests/fixtures/DocumentosJson/DadosDocumento.txt";
+            string caminho = "../../../tests/fixtures/DocumentosJson/ConsultaDocumento.txt";
             using (BinaryReader reader = new BinaryReader(File.Open(caminho, FileMode.Open)))
             {
                 var stream = reader.BaseStream;
 
-                var res = JsonHandler<DadosDocumento>.Desserializar(stream);
+                var res = JsonHandler<Documento>.Desserializar(stream);
 
-                Assert.Equal("SP", res.dest_end_uf);
-                Assert.Equal("1", res.ambiente_sefaz_id);
-                Assert.Equal("551045bf706f725f36262201", res.historicos[0].id);
-                Assert.Equal("7891308759621", res.itens[0].codigo);
-            }
-        }
-
-        [Fact]
-        public void TestDesserializarRootDocumento()
-        {
-            string caminho = "../../../tests/fixtures/DocumentosJson/RootDocumento.txt";
-            using (BinaryReader reader = new BinaryReader(File.Open(caminho, FileMode.Open)))
-            {
-                var stream = reader.BaseStream;
-                var res = JsonHandler<RootDocumento>.Desserializar(stream);
-
-                Assert.Equal("53d2f08f9711f6abe20009e7", res.documento.id);
-                Assert.Equal(1, res.documento.serie);
-                Assert.Equal("111.4", res.documento.valor);
-            }
-        }
-
-        [Fact]
-        public void TestDesserializarSolicitaDownload()
-        {
-            string caminho = "../../../tests/fixtures/DocumentosJson/SolicitaDownload.txt";
-            using (BinaryReader reader = new BinaryReader(File.Open(caminho, FileMode.Open)))
-            {
-                var stream = reader.BaseStream;
-                var res = JsonHandler<SolicitaDownload>.Desserializar(stream);
-
-                Assert.Equal("53eb0ce86661621e4e000000", res.id);
-                Assert.Equal("xml", res.formato);
-                Assert.Equal("nfe", res.tipo_documento);
+                Assert.Equal("72381189001001", res.toma_cnpj);
+                Assert.Equal("DELL COMPUTADORES DO BRASIL LTDA", res.toma_nome);
+                Assert.Equal("ok", res.situacao_custodia);
             }
         }
 
@@ -343,6 +267,36 @@ namespace Consyste.Clients.Portal
                 Assert.Equal("c2NhbjswOzE7dG90YWxfaGl0czozOw==", res.proxima_pagina);
                 Assert.Equal("53d2f08f9711f6abe20009e7", res.documentos[0].id);
                 Assert.Equal(1, res.documentos[0].serie);
+            }
+        }
+
+        [Fact]
+        public void TestDesserializarRootDocumento()
+        {
+            string caminho = "../../../tests/fixtures/DocumentosJson/RootDocumento.txt";
+            using (BinaryReader reader = new BinaryReader(File.Open(caminho, FileMode.Open)))
+            {
+                var stream = reader.BaseStream;
+                var res = JsonHandler<RootDocumento>.Desserializar(stream);
+
+                Assert.Equal("53d2f08f9711f6abe20009e7", res.documento.id);
+                Assert.Equal(1, res.documento.serie);
+                Assert.Equal("111.4", res.documento.valor);
+            }
+        }
+
+        [Fact]
+        public void TestDesserializarSolicitaDownload()
+        {
+            string caminho = "../../../tests/fixtures/DocumentosJson/SolicitaDownload.txt";
+            using (BinaryReader reader = new BinaryReader(File.Open(caminho, FileMode.Open)))
+            {
+                var stream = reader.BaseStream;
+                var res = JsonHandler<SolicitaDownload>.Desserializar(stream);
+
+                Assert.Equal("53eb0ce86661621e4e000000", res.id);
+                Assert.Equal("xml", res.formato);
+                Assert.Equal("nfe", res.tipo_documento);
             }
         }
         # endregion
