@@ -113,7 +113,7 @@ namespace Consyste.Clients.Portal
 
             var res = await PerformPost($"/api/v1/envio", postData);
 
-            if (res.StatusCode != HttpStatusCode.OK)
+            if (res.StatusCode != HttpStatusCode.Created)
             {
                 throw new ApplicationException($"Erro {res.StatusCode} ao enviar documento");
             }
@@ -135,7 +135,7 @@ namespace Consyste.Clients.Portal
         {
             var res = await PerformPost($"/api/v1/{modelo}/lista/{filtro}/download/{formato}?q={consulta}");
 
-            if (res.StatusCode != HttpStatusCode.OK)
+            if (res.StatusCode != HttpStatusCode.Accepted)
             {
                 throw new ApplicationException($"Erro {res.StatusCode} ao solicitar documento");
             }
@@ -170,7 +170,7 @@ namespace Consyste.Clients.Portal
         /// </summary>
         public async Task<Download> BaixaDocumento(string modelo, string formato, string chave)
         {
-            var res = await PerformGet($"/api/v1/{modelo}/{chave}/download{formato}");
+            var res = await PerformGet($"/api/v1/{modelo}/{chave}/download.{formato}");
 
             if (res.StatusCode != HttpStatusCode.OK)
             {
@@ -229,7 +229,7 @@ namespace Consyste.Clients.Portal
 
             var res = await PerformPost($"/api/v1/nfe/{chave}/decisao-portaria/{decisao}", postData);
 
-            if (res.StatusCode != HttpStatusCode.OK)
+            if (res.StatusCode != HttpStatusCode.Created)
             {
                 throw new ApplicationException($"Erro {res.StatusCode} ao salvar a decisão da portaria ");
             }
@@ -297,9 +297,9 @@ namespace Consyste.Clients.Portal
             switch (formato)
             {
                 case FormatoDocumento.Pdf:
-                    return ".pdf";
+                    return "pdf";
                 case FormatoDocumento.Xml:
-                    return ".xml";
+                    return "xml";
                 default:
                     throw new ArgumentException($"Formato desconhecido: {formato}", nameof(formato));
             }
