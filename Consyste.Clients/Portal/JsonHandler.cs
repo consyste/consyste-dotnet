@@ -1,8 +1,10 @@
 using System.IO;
+using System.Runtime.CompilerServices;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
+[assembly: InternalsVisibleTo("Consyste.Clients.Tests")]
 namespace Consyste.Clients.Portal
 {
     /// <summary>

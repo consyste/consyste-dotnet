@@ -2,7 +2,9 @@ using Xunit;
 using System.Threading.Tasks;
 using System.IO;
 
-namespace Consyste.Clients.Portal
+using Consyste.Clients.Portal;
+
+namespace Consyste.Clients.Tests
 {
     public class TestClient
     {
