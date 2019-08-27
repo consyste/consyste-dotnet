@@ -6,7 +6,6 @@ namespace Consyste.Clients.Portal
 {
     public class TestClient
     {
-
         public TestClient()
         {
         }
@@ -20,7 +19,7 @@ namespace Consyste.Clients.Portal
         {
             var res = await Cliente().ListaDocumentos(modelo, filtro);
 
-            Assert.Equal(total, res.total);
+            Assert.Equal(total, res.Total);
         }
 
         [Theory()]
@@ -34,7 +33,7 @@ namespace Consyste.Clients.Portal
             var consulta = "Kalunga";
 
             var res = await Cliente().ListaDocumentos(modelo, filtro, campos, consulta);
-            Assert.Equal(documentosCount, res.documentos.Count);
+            Assert.Equal(documentosCount, res.Documentos.Count);
 
         }
         # endregion
@@ -48,7 +47,7 @@ namespace Consyste.Clients.Portal
         {
             var res = await Cliente().ListaDocumentos(modelo, filtro);
 
-            Assert.Equal(total, res.total);
+            Assert.Equal(total, res.Total);
         }
 
         [Theory()]
@@ -61,7 +60,7 @@ namespace Consyste.Clients.Portal
 
             var res = await Cliente().ListaDocumentos(modelo, filtro, campos);
 
-            Assert.Equal(documentosCount, res.documentos.Count);
+            Assert.Equal(documentosCount, res.Documentos.Count);
         }
         # endregion
 
@@ -73,7 +72,7 @@ namespace Consyste.Clients.Portal
         {
             var res = await Cliente().ContinuaListagem(modelo, token);
 
-            Assert.Equal(total, res.total);
+            Assert.Equal(total, res.Total);
         }
         # endregion
 
@@ -85,7 +84,7 @@ namespace Consyste.Clients.Portal
         {
             var res = await Cliente().ContinuaListagem(modelo, token);
 
-            Assert.Equal(total, res.total);
+            Assert.Equal(total, res.Total);
         }
         # endregion
 
@@ -97,7 +96,7 @@ namespace Consyste.Clients.Portal
         {
             var res = await Cliente().ConsultaDocumento(modelo, id);
 
-            Assert.Equal("Kalunga Comercio Industria Grafica Ltda", res.emit_nome);
+            Assert.Equal("Kalunga Comercio Industria Grafica Ltda", res.EmitNome);
         }
         # endregion
 
@@ -109,14 +108,14 @@ namespace Consyste.Clients.Portal
         {
             var res = await Cliente().ConsultaDocumento(modelo, id);
 
-            Assert.Equal("DELL COMPUTADORES DO BRASIL LTDA", res.toma_nome);
+            Assert.Equal("DELL COMPUTADORES DO BRASIL LTDA", res.TomaNome);
         }
         # endregion
 
         # region BaixaDocumentosNfe
         [Theory()]
-        [InlineData(ModeloDocumento.Nfe, FormatoDocumento.Pdf, "43190743283811015939550010000139191316599936")]
-        [InlineData(ModeloDocumento.Nfe, FormatoDocumento.Pdf, "5d3f9a69e0897d0001bdfcc4")]
+        [InlineData(ModeloDocumento.Nfe, FormatoDocumento.PDF, "43190743283811015939550010000139191316599936")]
+        [InlineData(ModeloDocumento.Nfe, FormatoDocumento.PDF, "5d3f9a69e0897d0001bdfcc4")]
         public async Task TestBaixaDocumentoNfePdfConteudo(ModeloDocumento modelo, FormatoDocumento formato, string chave)
         {
             var res = await Cliente().BaixaDocumento(modelo, formato, chave);
@@ -125,8 +124,8 @@ namespace Consyste.Clients.Portal
         }
 
         [Theory()]
-        [InlineData(ModeloDocumento.Nfe, FormatoDocumento.Pdf, "43190743283811015939550010000139191316599936")]
-        [InlineData(ModeloDocumento.Nfe, FormatoDocumento.Pdf, "5d3f9a69e0897d0001bdfcc4")]
+        [InlineData(ModeloDocumento.Nfe, FormatoDocumento.PDF, "43190743283811015939550010000139191316599936")]
+        [InlineData(ModeloDocumento.Nfe, FormatoDocumento.PDF, "5d3f9a69e0897d0001bdfcc4")]
         public async Task TestBaixaDocumentoNfePdfSalva(ModeloDocumento modelo, FormatoDocumento formato, string chave)
         {
             var res = await Cliente().BaixaDocumento(modelo, formato, chave);
@@ -140,8 +139,8 @@ namespace Consyste.Clients.Portal
         }
 
         [Theory()]
-        [InlineData(ModeloDocumento.Nfe, FormatoDocumento.Xml, "43190743283811015939550010000139191316599936")]
-        [InlineData(ModeloDocumento.Nfe, FormatoDocumento.Xml, "5d3f9a69e0897d0001bdfcc4")]
+        [InlineData(ModeloDocumento.Nfe, FormatoDocumento.XML, "43190743283811015939550010000139191316599936")]
+        [InlineData(ModeloDocumento.Nfe, FormatoDocumento.XML, "5d3f9a69e0897d0001bdfcc4")]
         public async Task TestBaixaDocumentoNfeXmlConteudo(ModeloDocumento modelo, FormatoDocumento formato, string chave)
         {
             var res = await Cliente().BaixaDocumento(modelo, formato, chave);
@@ -150,8 +149,8 @@ namespace Consyste.Clients.Portal
         }
 
         [Theory()]
-        [InlineData(ModeloDocumento.Nfe, FormatoDocumento.Xml, "43190743283811015939550010000139191316599936")]
-        [InlineData(ModeloDocumento.Nfe, FormatoDocumento.Xml, "5d3f9a69e0897d0001bdfcc4")]
+        [InlineData(ModeloDocumento.Nfe, FormatoDocumento.XML, "43190743283811015939550010000139191316599936")]
+        [InlineData(ModeloDocumento.Nfe, FormatoDocumento.XML, "5d3f9a69e0897d0001bdfcc4")]
         public async Task TestBaixaDocumentoNfeXmlSalva(ModeloDocumento modelo, FormatoDocumento formato, string chave)
         {
             var res = await Cliente().BaixaDocumento(modelo, formato, chave);
@@ -168,8 +167,8 @@ namespace Consyste.Clients.Portal
 
         # region BaixaDocumentosCte
         [Theory()]
-        [InlineData(ModeloDocumento.Cte, FormatoDocumento.Pdf, "35190843244631002102570040004301431833984987")]
-        [InlineData(ModeloDocumento.Cte, FormatoDocumento.Pdf, "5d48fed3885f200001758e54")]
+        [InlineData(ModeloDocumento.Cte, FormatoDocumento.PDF, "35190843244631002102570040004301431833984987")]
+        [InlineData(ModeloDocumento.Cte, FormatoDocumento.PDF, "5d48fed3885f200001758e54")]
         public async Task TestBaixaDocumentoCtePdfConteudo(ModeloDocumento modelo, FormatoDocumento formato, string chave)
         {
             var res = await Cliente().BaixaDocumento(modelo, formato, chave);
@@ -178,8 +177,8 @@ namespace Consyste.Clients.Portal
         }
 
         [Theory()]
-        [InlineData(ModeloDocumento.Cte, FormatoDocumento.Pdf, "35190843244631002102570040004301431833984987")]
-        [InlineData(ModeloDocumento.Cte, FormatoDocumento.Pdf, "5d48fed3885f200001758e54")]
+        [InlineData(ModeloDocumento.Cte, FormatoDocumento.PDF, "35190843244631002102570040004301431833984987")]
+        [InlineData(ModeloDocumento.Cte, FormatoDocumento.PDF, "5d48fed3885f200001758e54")]
         public async Task TestBaixaDocumentoCtePdfSalva(ModeloDocumento modelo, FormatoDocumento formato, string chave)
         {
             var res = await Cliente().BaixaDocumento(modelo, formato, chave);
@@ -193,8 +192,8 @@ namespace Consyste.Clients.Portal
         }
 
         [Theory()]
-        [InlineData(ModeloDocumento.Cte, FormatoDocumento.Xml, "35190843244631002102570040004301431833984987")]
-        [InlineData(ModeloDocumento.Cte, FormatoDocumento.Xml, "5d48fed3885f200001758e54")]
+        [InlineData(ModeloDocumento.Cte, FormatoDocumento.XML, "35190843244631002102570040004301431833984987")]
+        [InlineData(ModeloDocumento.Cte, FormatoDocumento.XML, "5d48fed3885f200001758e54")]
         public async Task TestBaixaDocumentoCteXmlConteudo(ModeloDocumento modelo, FormatoDocumento formato, string chave)
         {
             var res = await Cliente().BaixaDocumento(modelo, formato, chave);
@@ -203,8 +202,8 @@ namespace Consyste.Clients.Portal
         }
 
         [Theory()]
-        [InlineData(ModeloDocumento.Cte, FormatoDocumento.Xml, "35190843244631002102570040004301431833984987")]
-        [InlineData(ModeloDocumento.Cte, FormatoDocumento.Xml, "5d48fed3885f200001758e54")]
+        [InlineData(ModeloDocumento.Cte, FormatoDocumento.XML, "35190843244631002102570040004301431833984987")]
+        [InlineData(ModeloDocumento.Cte, FormatoDocumento.XML, "5d48fed3885f200001758e54")]
         public async Task TestBaixaDocumentoCteXmlSalva(ModeloDocumento modelo, FormatoDocumento formato, string chave)
         {
             var res = await Cliente().BaixaDocumento(modelo, formato, chave);
@@ -230,9 +229,9 @@ namespace Consyste.Clients.Portal
 
                 var res = JsonHandler<Documento>.Desserializar(stream);
 
-                Assert.Equal("72381189001001", res.toma_cnpj);
-                Assert.Equal("DELL COMPUTADORES DO BRASIL LTDA", res.toma_nome);
-                Assert.Equal("ok", res.situacao_custodia);
+                Assert.Equal("72381189001001", res.TomaCnpj);
+                Assert.Equal("DELL COMPUTADORES DO BRASIL LTDA", res.TomaNome);
+                Assert.Equal("ok", res.SituacaoCustodia);
             }
         }
 
@@ -246,10 +245,10 @@ namespace Consyste.Clients.Portal
 
                 var res = JsonHandler<ConsultaDownload>.Desserializar(stream);
 
-                Assert.Equal("53d71e27666162088d040000", res.id);
-                Assert.Equal("xml", res.formato);
-                Assert.Equal("nfe", res.tipo_documento);
-                Assert.Equal("http://download-consyste.s3.amazonaws.com/xmls_2014-07-29T0108.zip", res.arquivo);
+                Assert.Equal("53d71e27666162088d040000", res.Id);
+                Assert.Equal("xml", res.Formato);
+                Assert.Equal("nfe", res.TipoDocumento);
+                Assert.Equal("http://download-consyste.s3.amazonaws.com/xmls_2014-07-29T0108.zip", res.Arquivo);
             }
         }
 
@@ -263,10 +262,10 @@ namespace Consyste.Clients.Portal
 
                 var res = JsonHandler<ListagemDocumentos>.Desserializar(stream);
 
-                Assert.Equal(3, res.total);
-                Assert.Equal("c2NhbjswOzE7dG90YWxfaGl0czozOw==", res.proxima_pagina);
-                Assert.Equal("53d2f08f9711f6abe20009e7", res.documentos[0].id);
-                Assert.Equal(1, res.documentos[0].serie);
+                Assert.Equal(3, res.Total);
+                Assert.Equal("c2NhbjswOzE7dG90YWxfaGl0czozOw==", res.ProximaPagina);
+                Assert.Equal("53d2f08f9711f6abe20009e7", res.Documentos[0].Id);
+                Assert.Equal(1, res.Documentos[0].Serie);
             }
         }
 
@@ -279,9 +278,9 @@ namespace Consyste.Clients.Portal
                 var stream = reader.BaseStream;
                 var res = JsonHandler<RootDocumento>.Desserializar(stream);
 
-                Assert.Equal("53d2f08f9711f6abe20009e7", res.documento.id);
-                Assert.Equal(1, res.documento.serie);
-                Assert.Equal("111.4", res.documento.valor);
+                Assert.Equal("53d2f08f9711f6abe20009e7", res.Documento.Id);
+                Assert.Equal(1, res.Documento.Serie);
+                Assert.Equal("111.4", res.Documento.Valor);
             }
         }
 
@@ -294,9 +293,9 @@ namespace Consyste.Clients.Portal
                 var stream = reader.BaseStream;
                 var res = JsonHandler<SolicitaDownload>.Desserializar(stream);
 
-                Assert.Equal("53eb0ce86661621e4e000000", res.id);
-                Assert.Equal("xml", res.formato);
-                Assert.Equal("nfe", res.tipo_documento);
+                Assert.Equal("53eb0ce86661621e4e000000", res.Id);
+                Assert.Equal("xml", res.Formato);
+                Assert.Equal("nfe", res.TipoDocumento);
             }
         }
         # endregion

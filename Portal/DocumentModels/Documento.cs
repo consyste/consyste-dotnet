@@ -2,26 +2,26 @@ namespace Consyste.Clients.Portal
 {
     public class Documento
     {
-        public string id { get; set; }
-        public string chave { get; set; }
-        public string emitido_em { get; set; }
-        public int? serie { get; set; }
-        public int? numero { get; set; }
-        public string valor { get; set; }
-        public string situacao_custodia { get; set; }
-        public int? situacao_sefaz { get; set; }
-        public string emit_cnpj { get; set; }
-        public string emit_nome { get; set; }
-        public string dest_cnpj { get; set; }
-        public string dest_nome { get; set; }
-        public string toma_nome { get; set; }
-        public string toma_cnpj { get; set; }
-        public string data_decisao_portaria { get; set; }
-        public string observacao_portaria { get; set; }
+        public string Id { get; set; }
+        public string Chave { get; set; }
+        public string EmitidoEm { get; set; }
+        public int? Serie { get; set; }
+        public int? Numero { get; set; }
+        public string Valor { get; set; }
+        public string SituacaoCustodia { get; set; }
+        public int? SituacaoSefaz { get; set; }
+        public string EmitCnpj { get; set; }
+        public string EmitNome { get; set; }
+        public string DestCnpj { get; set; }
+        public string DestNome { get; set; }
+        public string TomaNome { get; set; }
+        public string TomaCnpj { get; set; }
+        public string DataDecisaoPortaria { get; set; }
+        public string ObservacaoPortaria { get; set; }
     }
 
     public class RootDocumento
     {
-        public Documento documento { get; set; }
+        public Documento Documento { get; set; }
     }
 }

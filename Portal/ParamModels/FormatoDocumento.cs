@@ -2,8 +2,8 @@ namespace Consyste.Clients.Portal
 {
     public enum FormatoDocumento
     {
-        Pdf = 0,
-        Xml = 1,
+        PDF = 0,
+        XML = 1,
     }
 }
 

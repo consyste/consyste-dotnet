@@ -40,9 +40,8 @@ namespace Consyste.Clients.Portal
             {
                 foreach (string campo in campos)
                 {
-                    campoParametro = campoParametro + campo + ",";
+                    campoParametro = "campos=" + String.Join(",", campos);
                 }
-                campoParametro = "campos=" + campoParametro;
             }
 
             if (consulta != null)
@@ -109,7 +108,10 @@ namespace Consyste.Clients.Portal
         /// </summary>
         public async Task<RootDocumento> EnviaDocumento(string xml, string terceiroCnpj = null)
         {
-            string postData = "{ " + $"xml: {xml}, terceiro_cnpj: {terceiroCnpj}" + " }";
+            EnviaDocumento documento = new EnviaDocumento();
+            documento.Xml = xml;
+            documento.TerceiroCnpj = terceiroCnpj;
+            string postData = JsonHandler<EnviaDocumento>.Serializar(documento);
 
             var res = await PerformPost($"/api/v1/envio", postData);
 
@@ -196,7 +198,7 @@ namespace Consyste.Clients.Portal
 
             if (justificativa != null)
             {
-                ParametroJustificativa = $"?justificativa={justificativa}";
+                ParametroJustificativa = "?justificativa=" + Uri.EscapeUriString(justificativa);
             }
             var res = await PerformPost($"/api/v1/{modelo}/{id}/manifestar/{manifestacao}{ParametroJustificativa}");
 
@@ -224,7 +226,9 @@ namespace Consyste.Clients.Portal
 
             if (observacao != null)
             {
-                postData = "{ " + $"observacao: {observacao}" + " }";
+                DecisaoObservacao obs = new DecisaoObservacao();
+                obs.Observacao = observacao;
+                postData = JsonHandler<DecisaoObservacao>.Serializar(obs);
             }
 
             var res = await PerformPost($"/api/v1/nfe/{chave}/decisao-portaria/{decisao}", postData);
@@ -296,9 +300,9 @@ namespace Consyste.Clients.Portal
         {
             switch (formato)
             {
-                case FormatoDocumento.Pdf:
+                case FormatoDocumento.PDF:
                     return "pdf";
-                case FormatoDocumento.Xml:
+                case FormatoDocumento.XML:
                     return "xml";
                 default:
                     throw new ArgumentException($"Formato desconhecido: {formato}", nameof(formato));

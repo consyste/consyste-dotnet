@@ -2,13 +2,13 @@ namespace Consyste.Clients.Portal
 {
     public class ConsultaDownload
     {
-        public string id { get; set; }
-        public string formato { get; set; }
-        public string tipo_documento { get; set; }
-        public int? atual { get; set; }
-        public int? total { get; set; }
-        public string erros { get; set; }
-        public string concluido_em { get; set; }
-        public string arquivo { get; set; }
+        public string Id { get; set; }
+        public string Formato { get; set; }
+        public string TipoDocumento { get; set; }
+        public int? Atual { get; set; }
+        public int? Total { get; set; }
+        public string Erros { get; set; }
+        public string ConcluidoEm { get; set; }
+        public string Arquivo { get; set; }
     }
 }

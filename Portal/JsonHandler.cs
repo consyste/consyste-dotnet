@@ -1,15 +1,25 @@
 using System.IO;
 
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace Consyste.Clients.Portal
-{   
+{
     /// <summary>
-    /// Esta classe é responsável por manipular o JSON recebido da API.
+    /// Esta classe é responsável pela manipulação do JSON.
     /// </summary>
-    public static class JsonHandler<T>
+    internal static class JsonHandler<T>
     {
-        static readonly JsonSerializer jsonSerializer = JsonSerializer.CreateDefault();
+        private static JsonSerializerSettings defaultJsonSerializerSettings = new JsonSerializerSettings
+        {
+            ContractResolver = new DefaultContractResolver
+            {
+                NamingStrategy = new SnakeCaseNamingStrategy()
+            }
+        };
+
+        static readonly JsonSerializer jsonSerializer = JsonSerializer.Create(defaultJsonSerializerSettings);
+
         /// <summary>
         /// Converte o JSON em um objeto. 
         /// </summary>
@@ -23,5 +33,14 @@ namespace Consyste.Clients.Portal
                 }
             }
         }
+
+        /// <summary>
+        /// Converte um Objeto para JSON. 
+        /// </summary>
+        public static string Serializar(T objeto)
+        {
+            return JsonConvert.SerializeObject(objeto, defaultJsonSerializerSettings);
+        }
+
     }
 }
