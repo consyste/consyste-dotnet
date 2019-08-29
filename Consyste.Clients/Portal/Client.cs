@@ -247,8 +247,6 @@ namespace Consyste.Clients.Portal
         private async Task<HttpWebResponse> PerformGet(string uri)
         {
             var req = (HttpWebRequest) HttpWebRequest.Create(Config.UrlBase + uri);
-            req.Headers.Add(HttpRequestHeader.UserAgent, "Consyst-e .NET Client 1.0");
-            req.Headers.Add(HttpRequestHeader.Accept, "application/json");
             req.Headers.Add("X-Consyste-Auth-Token", Config.ApiKey);
 
             return (HttpWebResponse) await req.GetResponseAsync();
