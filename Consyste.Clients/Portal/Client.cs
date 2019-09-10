@@ -260,8 +260,6 @@ namespace Consyste.Clients.Portal
             HttpWebRequest req = (HttpWebRequest) HttpWebRequest.Create(Config.UrlBase + uri);
 
             req.Method = "POST";
-            req.Headers.Add(HttpRequestHeader.UserAgent, "Consyst-e .NET Client 1.0");
-            req.Headers.Add(HttpRequestHeader.Accept, "application/json");
             req.Headers.Add("X-Consyste-Auth-Token", Config.ApiKey);
 
             if (postData != null)
