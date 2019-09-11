@@ -38,10 +38,7 @@ namespace Consyste.Clients.Portal
 
             if (campos != null)
             {
-                foreach (string campo in campos)
-                {
-                    campoParametro = "campos=" + String.Join(",", campos);
-                }
+                campoParametro = "campos=" + String.Join(",", campos);
             }
 
             if (consulta != null)
