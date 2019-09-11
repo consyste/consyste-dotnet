@@ -1,0 +1,5 @@
+{
+  "id": "53eb0ce86661621e4e000000",
+  "formato": "xml",
+  "tipo_documento": "nfe"
+}

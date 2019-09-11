@@ -1,0 +1,10 @@
+{
+  "id": "53d71e27666162088d040000",
+  "formato": "xml",
+  "tipo_documento": "nfe",
+  "atual": 5,
+  "total": 5,
+  "erros": null,
+  "concluido_em": "2014-07-29T01:08:12-03:00",
+  "arquivo": "http://download-consyste.s3.amazonaws.com/xmls_2014-07-29T0108.zip"
+}
