@@ -34,7 +34,8 @@ e criar o cliente com sua chave de acesso:
 
 #### Lista de Documentos
 
-    $Res = $ClientInstance.ListaDocumentos("nfe", "recebidos").GetAwaiter().GetResult()
+    [string[]]$Campos = 'chave' 
+    $Res = $ClientInstance.ListaDocumentos("nfe", "recebidos", $Campos).GetAwaiter().GetResult()
     while ($Res.Documentos.Count -gt 0) {
         foreach ($Documento in $ListaDocumentos.Documentos) {
             # ...
