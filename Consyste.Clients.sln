@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Consyste.Clients", "Consyste.Clients\Consyste.Clients.csproj", "{BE5B52AE-80C5-495B-AA38-E4F878883DAE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Consyste.Clients.Tests", "Consyste.Clients.Tests\Consyste.Clients.Tests.csproj", "{911B8D5D-AB2C-4F31-AF0E-8E9E836F2692}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BE5B52AE-80C5-495B-AA38-E4F878883DAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE5B52AE-80C5-495B-AA38-E4F878883DAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE5B52AE-80C5-495B-AA38-E4F878883DAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE5B52AE-80C5-495B-AA38-E4F878883DAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{911B8D5D-AB2C-4F31-AF0E-8E9E836F2692}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{911B8D5D-AB2C-4F31-AF0E-8E9E836F2692}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{911B8D5D-AB2C-4F31-AF0E-8E9E836F2692}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{911B8D5D-AB2C-4F31-AF0E-8E9E836F2692}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

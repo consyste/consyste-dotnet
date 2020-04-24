@@ -19,9 +19,4 @@ namespace Consyste.Clients.Portal
         public string DataDecisaoPortaria { get; set; }
         public string ObservacaoPortaria { get; set; }
     }
-
-    public class RootDocumento
-    {
-        public Documento Documento { get; set; }
-    }
 }

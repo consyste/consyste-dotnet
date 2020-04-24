@@ -12,9 +12,13 @@ namespace Consyste.Clients.Portal
     {
         public Configuration Config { get; }
 
-        public Client() : this(new Configuration()) { }
+        public Client() : this(new Configuration())
+        {
+        }
 
-        public Client(string apiKey) : this(new Configuration { ApiKey = apiKey }) { }
+        public Client(string apiKey) : this(new Configuration { ApiKey = apiKey })
+        {
+        }
 
         public Client(Configuration config)
         {
@@ -28,32 +32,27 @@ namespace Consyste.Clients.Portal
         {
             return await ListaDocumentos(CodigoModelo(modelo), CodigoFiltro(filtro), campos, consulta);
         }
+
         /// <summary>
         /// Obtém uma lista com dados dos documentos constantes no Portal.
         /// </summary>
         public async Task<ListagemDocumentos> ListaDocumentos(string modelo, string filtro, string[] campos = null, string consulta = null)
         {
-            string campoParametro = "";
-            string consultaParametro = "";
+            var campoParametro = "";
+            var consultaParametro = "";
 
             if (campos != null)
-            {
                 campoParametro = "campos=" + String.Join(",", campos);
-            }
 
             if (consulta != null)
-            {
                 consultaParametro = "q=" + Uri.EscapeUriString(consulta);
-            }
 
             var res = await PerformGet($"/api/v1/{modelo}/lista/{filtro}?{consultaParametro}&{campoParametro}");
 
             if (res.StatusCode != HttpStatusCode.OK)
-            {
                 throw new ApplicationException($"Erro {res.StatusCode} ao solicitar listagem de documentos");
-            }
 
-            return JsonHandler<ListagemDocumentos>.Desserializar(res.GetResponseStream());
+            return JsonHandler.Desserializar<ListagemDocumentos>(res.GetResponseStream());
         }
 
         /// <summary>
@@ -63,6 +62,7 @@ namespace Consyste.Clients.Portal
         {
             return await ContinuaListagem(CodigoModelo(modelo), token);
         }
+
         /// <summary>
         /// Para continuar uma busca da listagem dos documentos.
         /// </summary>
@@ -75,7 +75,7 @@ namespace Consyste.Clients.Portal
                 throw new ApplicationException($"Erro {res.StatusCode} ao continuar listagem de documentos");
             }
 
-            return JsonHandler<ListagemDocumentos>.Desserializar(res.GetResponseStream());
+            return JsonHandler.Desserializar<ListagemDocumentos>(res.GetResponseStream());
         }
 
         /// <summary>
@@ -85,6 +85,7 @@ namespace Consyste.Clients.Portal
         {
             return await ConsultaDocumento(CodigoModelo(modelo), id);
         }
+
         /// <summary>
         /// Obtém os dados de um documento constante no Portal.
         /// </summary>
@@ -97,7 +98,7 @@ namespace Consyste.Clients.Portal
                 throw new ApplicationException($"Erro {res.StatusCode} ao consultar documento");
             }
 
-            return JsonHandler<Documento>.Desserializar(res.GetResponseStream());
+            return JsonHandler.Desserializar<Documento>(res.GetResponseStream());
         }
 
         /// <summary>
@@ -105,19 +106,15 @@ namespace Consyste.Clients.Portal
         /// </summary>
         public async Task<RootDocumento> EnviaDocumento(string xml, string terceiroCnpj = null)
         {
-            EnviaDocumento documento = new EnviaDocumento();
-            documento.Xml = xml;
-            documento.TerceiroCnpj = terceiroCnpj;
-            string postData = JsonHandler<EnviaDocumento>.Serializar(documento);
+            var documento = new EnviaDocumento { Xml = xml, TerceiroCnpj = terceiroCnpj };
+            var postData = JsonHandler.Serializar(documento);
 
-            var res = await PerformPost($"/api/v1/envio", postData);
+            var res = await PerformPost("/api/v1/envio", postData);
 
             if (res.StatusCode != HttpStatusCode.Created)
-            {
                 throw new ApplicationException($"Erro {res.StatusCode} ao enviar documento");
-            }
 
-            return JsonHandler<RootDocumento>.Desserializar(res.GetResponseStream());
+            return JsonHandler.Desserializar<RootDocumento>(res.GetResponseStream());
         }
 
         /// <summary>
@@ -127,6 +124,7 @@ namespace Consyste.Clients.Portal
         {
             return await SolicitaDownload(CodigoModelo(modelo), CodigoFiltro(filtro), CodigoFormato(formato), consulta);
         }
+
         /// <summary>
         /// Solicita os arquivos XML ou PDF de um lote de documentos fiscais.
         /// </summary>  
@@ -135,11 +133,9 @@ namespace Consyste.Clients.Portal
             var res = await PerformPost($"/api/v1/{modelo}/lista/{filtro}/download/{formato}?q={consulta}");
 
             if (res.StatusCode != HttpStatusCode.Accepted)
-            {
                 throw new ApplicationException($"Erro {res.StatusCode} ao solicitar documento");
-            }
 
-            return JsonHandler<SolicitaDownload>.Desserializar(res.GetResponseStream());
+            return JsonHandler.Desserializar<SolicitaDownload>(res.GetResponseStream());
         }
 
         /// <summary>
@@ -150,11 +146,9 @@ namespace Consyste.Clients.Portal
             var res = await PerformGet($"/api/v1/download/{id}");
 
             if (res.StatusCode != HttpStatusCode.OK)
-            {
                 throw new ApplicationException($"Erro {res.StatusCode} ao consultar o download solicitado");
-            }
 
-            return JsonHandler<ConsultaDownload>.Desserializar(res.GetResponseStream());
+            return JsonHandler.Desserializar<ConsultaDownload>(res.GetResponseStream());
         }
 
         /// <summary>
@@ -164,6 +158,7 @@ namespace Consyste.Clients.Portal
         {
             return await BaixaDocumento(CodigoModelo(modelo), CodigoFormato(formato), chave);
         }
+
         /// <summary>
         /// Obtém o XML ou PDF de um documento constante no Portal.
         /// </summary>
@@ -172,9 +167,7 @@ namespace Consyste.Clients.Portal
             var res = await PerformGet($"/api/v1/{modelo}/{chave}/download.{formato}");
 
             if (res.StatusCode != HttpStatusCode.OK)
-            {
                 throw new ApplicationException($"Erro {res.StatusCode} ao baixar documento");
-            }
 
             return new Download(res);
         }
@@ -186,23 +179,21 @@ namespace Consyste.Clients.Portal
         {
             return await ManifestacaoNfe(CodigoModelo(modelo), id, CodigoManifestacao(manifestacao), justificativa);
         }
+
         /// <summary>
         /// A empresa poderá informar a manifestação acerca de suas notas destinadas à SEFAZ.
         /// </summary>
         public async Task<HttpStatusCode> ManifestacaoNfe(string modelo, string id, string manifestacao, string justificativa = null)
         {
-            string ParametroJustificativa = "";
+            var parametroJustificativa = "";
 
             if (justificativa != null)
-            {
-                ParametroJustificativa = "?justificativa=" + Uri.EscapeUriString(justificativa);
-            }
-            var res = await PerformPost($"/api/v1/{modelo}/{id}/manifestar/{manifestacao}{ParametroJustificativa}");
+                parametroJustificativa = "?justificativa=" + Uri.EscapeUriString(justificativa);
+
+            var res = await PerformPost($"/api/v1/{modelo}/{id}/manifestar/{manifestacao}{parametroJustificativa}");
 
             if (res.StatusCode != HttpStatusCode.OK)
-            {
                 throw new ApplicationException($"Erro {res.StatusCode} ao continuar listagem de documentos");
-            }
 
             return res.StatusCode;
         }
@@ -214,6 +205,7 @@ namespace Consyste.Clients.Portal
         {
             return await DecisaoPortariaNFe(chave, CodigoDecisao(decisao), observacao);
         }
+
         /// <summary>
         /// Salva a decisão da portaria em documento NF-e.
         /// </summary>
@@ -223,19 +215,16 @@ namespace Consyste.Clients.Portal
 
             if (observacao != null)
             {
-                DecisaoObservacao obs = new DecisaoObservacao();
-                obs.Observacao = observacao;
-                postData = JsonHandler<DecisaoObservacao>.Serializar(obs);
+                var obs = new DecisaoObservacao { Observacao = observacao };
+                postData = JsonHandler.Serializar(obs);
             }
 
             var res = await PerformPost($"/api/v1/nfe/{chave}/decisao-portaria/{decisao}", postData);
 
             if (res.StatusCode != HttpStatusCode.Created)
-            {
                 throw new ApplicationException($"Erro {res.StatusCode} ao salvar a decisão da portaria ");
-            }
 
-            return JsonHandler<RootDocumento>.Desserializar(res.GetResponseStream());
+            return JsonHandler.Desserializar<RootDocumento>(res.GetResponseStream());
         }
 
         /// <summary>
@@ -243,7 +232,7 @@ namespace Consyste.Clients.Portal
         /// </summary>
         private async Task<HttpWebResponse> PerformGet(string uri)
         {
-            var req = (HttpWebRequest) HttpWebRequest.Create(Config.UrlBase + uri);
+            var req = (HttpWebRequest) WebRequest.Create(Config.UrlBase + uri);
             req.Headers.Add("X-Consyste-Auth-Token", Config.ApiKey);
 
             return (HttpWebResponse) await req.GetResponseAsync();
@@ -254,102 +243,71 @@ namespace Consyste.Clients.Portal
         /// </summary>
         private async Task<HttpWebResponse> PerformPost(string uri, string postData = null)
         {
-            HttpWebRequest req = (HttpWebRequest) HttpWebRequest.Create(Config.UrlBase + uri);
+            var req = (HttpWebRequest) WebRequest.Create(Config.UrlBase + uri);
 
             req.Method = "POST";
             req.Headers.Add("X-Consyste-Auth-Token", Config.ApiKey);
 
-            if (postData != null)
-            {
-                var data = Encoding.UTF8.GetBytes(postData);
+            if (postData == null)
+                return (HttpWebResponse) await req.GetResponseAsync();
 
-                req.ContentType = "Content-Type: application/json";
-                req.ContentLength = data.Length;
+            var data = Encoding.UTF8.GetBytes(postData);
+            req.ContentType = "Content-Type: application/json";
+            req.ContentLength = data.Length;
 
-                using (var stream = req.GetRequestStream())
-                {
-                    stream.Write(data, 0, data.Length);
-                }
-            }
+            using var stream = req.GetRequestStream();
+            await stream.WriteAsync(data, 0, data.Length);
 
             return (HttpWebResponse) await req.GetResponseAsync();
         }
 
         # region Parâmetros
-        private string CodigoModelo(ModeloDocumento modelo)
-        {
-            switch (modelo)
-            {
-                case ModeloDocumento.Nfe:
-                    return "nfe";
-                case ModeloDocumento.Cte:
-                    return "cte";
-                default:
-                    throw new ArgumentException($"Modelo desconhecido: {modelo}", nameof(modelo));
-            }
-        }
 
-        private string CodigoFormato(FormatoDocumento formato)
-        {
-            switch (formato)
+        private string CodigoModelo(ModeloDocumento modelo) =>
+            modelo switch
             {
-                case FormatoDocumento.PDF:
-                    return "pdf";
-                case FormatoDocumento.XML:
-                    return "xml";
-                default:
-                    throw new ArgumentException($"Formato desconhecido: {formato}", nameof(formato));
-            }
-        }
+                ModeloDocumento.Nfe => "nfe",
+                ModeloDocumento.Cte => "cte",
+                _                   => throw new ArgumentException($"Modelo desconhecido: {modelo}", nameof(modelo))
+            };
 
-        private string CodigoFiltro(FiltroDocumento filtro)
-        {
-            switch (filtro)
+        private string CodigoFormato(FormatoDocumento formato) =>
+            formato switch
             {
-                case FiltroDocumento.Emitidos:
-                    return "emitidos";
-                case FiltroDocumento.Recebidos:
-                    return "recebidos";
-                case FiltroDocumento.Tomados:
-                    return "tomados";
-                case FiltroDocumento.Todos:
-                    return "todos";
-                default:
-                    throw new ArgumentException($"Filtro desconhecido: {filtro}", nameof(filtro));
-            }
-        }
+                FormatoDocumento.PDF => "pdf",
+                FormatoDocumento.XML => "xml",
+                _                    => throw new ArgumentException($"Formato desconhecido: {formato}", nameof(formato))
+            };
 
-        private string CodigoManifestacao(Manifestacao manifestacao)
-        {
-            switch (manifestacao)
+        private string CodigoFiltro(FiltroDocumento filtro) =>
+            filtro switch
             {
-                case Manifestacao.Confirmada:
-                    return "confirmada";
-                case Manifestacao.Desconhecida:
-                    return "desconhecida";
-                case Manifestacao.OperacaoNaoRealizada:
-                    return "operacao_nao_realizada";
-                case Manifestacao.Ciencia:
-                    return "ciencia";
-                default:
-                    throw new ArgumentException($"Manifestação desconhecida: {manifestacao}", nameof(manifestacao));
-            }
-        }
+                FiltroDocumento.Emitidos  => "emitidos",
+                FiltroDocumento.Recebidos => "recebidos",
+                FiltroDocumento.Tomados   => "tomados",
+                FiltroDocumento.Todos     => "todos",
+                _                         => throw new ArgumentException($"Filtro desconhecido: {filtro}", nameof(filtro))
+            };
 
-        private string CodigoDecisao(Decisao decisao)
-        {
-            switch (decisao)
+        private string CodigoManifestacao(Manifestacao manifestacao) =>
+            manifestacao switch
             {
-                case Decisao.Receber:
-                    return "receber";
-                case Decisao.Devolver:
-                    return "devolver";
-                case Decisao.ReceberComPendencia:
-                    return "receber_com_pendencia";
-                default:
-                    throw new ArgumentException($"Decisão desconhecida: {decisao}", nameof(decisao));
-            }
-        }
+                Manifestacao.Confirmada           => "confirmada",
+                Manifestacao.Desconhecida         => "desconhecida",
+                Manifestacao.OperacaoNaoRealizada => "operacao_nao_realizada",
+                Manifestacao.Ciencia              => "ciencia",
+                _                                 => throw new ArgumentException($"Manifestação desconhecida: {manifestacao}", nameof(manifestacao))
+            };
+
+        private string CodigoDecisao(Decisao decisao) =>
+            decisao switch
+            {
+                Decisao.Receber             => "receber",
+                Decisao.Devolver            => "devolver",
+                Decisao.ReceberComPendencia => "receber_com_pendencia",
+                _                           => throw new ArgumentException($"Decisão desconhecida: {decisao}", nameof(decisao))
+            };
+
         # endregion
     }
 }
