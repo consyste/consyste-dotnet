@@ -7,6 +7,7 @@
     <Authors>Fábio David Batista</Authors>
     <Company>Consyste</Company>
     <PackageTags>Consyste;NFe;CTe;NFSe;CTeOS;DFe;DANFE;DACTE;Custódia</PackageTags>
+    <RepositoryUrl>https://github.com/consyste/consyste-dotnet</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>
