@@ -12,6 +12,7 @@ project.lock.json
 *.user
 *.userosscache
 *.sln.docstates
+nuget.config
 
 # Build results
 [Dd]ebug/
