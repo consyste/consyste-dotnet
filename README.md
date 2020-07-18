@@ -42,7 +42,7 @@ var lista = await client.ListaDocumentos(
     new string[] { "chave" }, "recebido_em: >now-7d"
 );
 
-Console.WriteLine($"{lista.Total} documentos encontrados pela busca"
+Console.WriteLine($"{lista.Total} documentos encontrados pela busca");
 while (lista.Documentos.Count > 0) {
     foreach (var doc in lista.Documentos)
         Console.WriteLine("Chave: " + doc.Chave);
@@ -53,7 +53,7 @@ while (lista.Documentos.Count > 0) {
 #### Consultando um documento
 
 ```c#
-var doc = await client.ConsultaDocumento(ModeloDocumento.Nfe, "5d3f9a69e0897d0001bdfcc4")
+var doc = await client.ConsultaDocumento(ModeloDocumento.Nfe, "5d3f9a69e0897d0001bdfcc4");
 Console.WriteLine(doc.Chave)
 ```
 
@@ -61,7 +61,7 @@ Console.WriteLine(doc.Chave)
 
 ```c#
 var chave = "43190743283811015939550010000139191316599936";
-var doc = await client.BaixaDocumento(ModeloDocumento.Nfe, FormatoDocumento.XML, chave)
+var doc = await client.BaixaDocumento(ModeloDocumento.Nfe, FormatoDocumento.XML, chave);
 doc.Salva($"C:\\{chave}.xml")
 ```
 
@@ -69,8 +69,8 @@ doc.Salva($"C:\\{chave}.xml")
 
 ```c#
 var chave = "43190743283811015939550010000139191316599936";
-var doc = await client.BaixaDocumento(ModeloDocumento.Nfe, FormatoDocumento.PDF, chave)
-doc.Salva($"C:\\{chave}.pdf")
+var doc = await client.BaixaDocumento(ModeloDocumento.Nfe, FormatoDocumento.PDF, chave);
+doc.Salva($"C:\\{chave}.pdf");
 ```
 
 #### Download de uma lista de documentos (formato ZIP)
