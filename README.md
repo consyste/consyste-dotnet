@@ -1,5 +1,8 @@
 # Consyste.Clients
 
+[![Nuget](https://img.shields.io/nuget/v/Consyste.Clients?style=for-the-badge)](https://www.nuget.org/packages/Consyste.Clients/)
+[![Nuget](https://img.shields.io/nuget/dt/Consyste.Clients?style=for-the-badge)](https://www.nuget.org/packages/Consyste.Clients/)
+
 Implementação da biblioteca contendo os acessos à API da Consyste.
 
 Para mais informações sobre a API, acesse a documentação: https://portal.consyste.com.br/doc/api/introducao
